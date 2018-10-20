@@ -12,13 +12,16 @@ public class Overhead2DPlayerController : MonoBehaviour {
     int scoreCounter;
 
     [SerializeField]
-    Text score;
+    Text score, winText;
     [SerializeField]
     float moveSpeed;
 
     private void Start()
     {
         myRigidBody = GetComponent<Rigidbody2D>();
+        scoreCounter = 0;
+        winText.text = "";
+        SetCountText();
     }
 
     private void FixedUpdate()
@@ -31,10 +34,19 @@ public class Overhead2DPlayerController : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Pickup")
+        if (collision.tag == "PickUp")
         {
             collision.gameObject.SetActive(false);
-            score.text = scoreCounter++.ToString();
+            scoreCounter++;
+            SetCountText();
         }            
+    }
+
+    void SetCountText()
+    {
+        score.text = "Score: " + scoreCounter.ToString();
+
+        if (scoreCounter >= 12)
+            winText.text = "You Win!!!";
     }
 }
