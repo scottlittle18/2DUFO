@@ -9,7 +9,7 @@ public class Overhead2DPlayerController : MonoBehaviour {
 
     private float moveHorizontal, moveVertical;
 
-    int scoreCounter;
+    int scoreCounter, pickupTotal, pickupsLeft;
 
     [SerializeField]
     Text score, winText;
@@ -21,7 +21,9 @@ public class Overhead2DPlayerController : MonoBehaviour {
         myRigidBody = GetComponent<Rigidbody2D>();
         scoreCounter = 0;
         winText.text = "";
-        SetCountText();
+        pickupTotal = GameObject.FindGameObjectsWithTag("PickUp").Length;
+        pickupsLeft = GameObject.FindGameObjectsWithTag("PickUp").Length;
+        SetScoreText();
     }
 
     private void FixedUpdate()
@@ -38,15 +40,24 @@ public class Overhead2DPlayerController : MonoBehaviour {
         {
             collision.gameObject.SetActive(false);
             scoreCounter++;
-            SetCountText();
-        }            
+            pickupsLeft = pickupTotal--;
+            SetScoreText();
+        }
+        else if (collision.tag == "Hazard")
+        {
+            collision.gameObject.SetActive(false);
+            scoreCounter--;
+            SetScoreText();
+        }
     }
 
-    void SetCountText()
+    void SetScoreText()
     {
         score.text = "Score: " + scoreCounter.ToString();
 
         if (scoreCounter >= 12)
             winText.text = "You Win!!!";
+        else if (scoreCounter < pickupTotal && pickupsLeft == 0)
+            winText.text = "You Lose!";
     }
 }
