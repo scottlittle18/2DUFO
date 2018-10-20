@@ -23,5 +23,7 @@ public class AstroidMotion : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Wall" && speed < maxSpeed)
             speed += speedInc;
+        else if (collision.gameObject.tag == "Player" && speed < maxSpeed)
+            speed += speedInc;
     }
 }

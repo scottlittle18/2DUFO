@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Overhead2DPlayerController : MonoBehaviour {
 
     private Rigidbody2D myRigidBody;
+    
 
     private float moveHorizontal, moveVertical;
 
-    int scoreCounter, pickupTotal, pickupsLeft;
+    int scoreCounter, pickupTotal, pickupsLeft, currentLevel;
 
     [SerializeField]
     Text score, winText;
     [SerializeField]
-    float moveSpeed;
+    float moveSpeed, levelGoal;
 
     private void Start()
     {
@@ -23,6 +25,7 @@ public class Overhead2DPlayerController : MonoBehaviour {
         winText.text = "";
         pickupTotal = GameObject.FindGameObjectsWithTag("PickUp").Length;
         pickupsLeft = GameObject.FindGameObjectsWithTag("PickUp").Length;
+        currentLevel = SceneManager.GetActiveScene().buildIndex;
         SetScoreText();
     }
 
@@ -42,12 +45,24 @@ public class Overhead2DPlayerController : MonoBehaviour {
             scoreCounter++;
             pickupsLeft = pickupTotal--;
             SetScoreText();
-        }
-        else if (collision.tag == "Hazard")
-        {
-            collision.gameObject.SetActive(false);
+        }               
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Hazard")
+        {            
             scoreCounter--;
             SetScoreText();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Portal" && Input.GetKeyDown(KeyCode.Space));
+        {
+            Debug.Log("NextLevel");
+            SceneManager.LoadScene(currentLevel + 1);
         }
     }
 
@@ -55,9 +70,9 @@ public class Overhead2DPlayerController : MonoBehaviour {
     {
         score.text = "Score: " + scoreCounter.ToString();
 
-        if (scoreCounter >= 12)
+        if (scoreCounter >= pickupTotal)
             winText.text = "You Win!!!";
-        else if (scoreCounter < pickupTotal && pickupsLeft == 0)
+        else if (scoreCounter < levelGoal && pickupsLeft <= pickupTotal * (levelGoal/100) - scoreCounter)
             winText.text = "You Lose!";
     }
 }
