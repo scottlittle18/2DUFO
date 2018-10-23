@@ -6,20 +6,17 @@ using UnityEngine.SceneManagement;
 public class MenuButtons : MonoBehaviour {
 
     int currentScene;
-	
+
     // Use this for initialization
-	void Start () {
-       currentScene = SceneManager.GetActiveScene().buildIndex;
+    void Start()
+    {
+        currentScene = SceneManager.GetActiveScene().buildIndex;
 
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
-    public void PressStartButton()
+    public void StartGame()
     {
+        Debug.Log("Next Level Initiated");
         SceneManager.LoadScene(currentScene +1);
     }
 
@@ -30,7 +27,7 @@ public class MenuButtons : MonoBehaviour {
 
     public void ExitCredits()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene(0);
     }
 
     public void Quit()
